@@ -1,5 +1,5 @@
 import { VideoJSPlayer } from "./VideoJSPlayer";
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { VideoObject } from "./VideoObject";
 import Player from 'video.js/dist/types/player';
 import styled from 'styled-components';
