@@ -12,7 +12,6 @@ interface VideoObjectProps extends React.HTMLAttributes<HTMLLIElement> {
 const Wrapper = styled.li`
   padding: 20px 60px;
   background: rgba(255,255,255,0.2);
-  border-radius: 10px;
   cursor: pointer;
   position: relative;
   overflow: hidden;

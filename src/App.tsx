@@ -4,14 +4,27 @@ import { VideoObject } from "./VideoObject";
 import Player from 'video.js/dist/types/player';
 import styled from 'styled-components';
 
+const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;  
+  width: 100%;
+  height: 100svh;
+`
 const HlsVideoWrapper = styled.div`
   position: relative;  
-  width: 50%;
+  width: 100%;
+  flex: 1;
 `;
 
 const CustomPlayer = styled(VideoJSPlayer)`
   width: 100%;
   height: 100%;
+  flex: 1;
+
+  & video {
+    object-fit: cover;
+  }
 `
 
 const VideoObjects = styled.ul`
@@ -19,8 +32,6 @@ const VideoObjects = styled.ul`
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 20px;
-  margin: 60px 0;
 `
 
 
@@ -63,10 +74,10 @@ function App() {
 
   const videoOptions = {
     autoplay: true,
-    controls: false,
+    controls: true,
     muted: true,
     responsive: true,
-    fluid: true,
+    fill: true,
     sources: [{
       src: 'https://player.vimeo.com/external/923256935.m3u8?s=ce3998af81789b5deaa4a29f7ea303b6ac9ce231&logging=false',
       type: 'application/x-mpegURL'
@@ -90,7 +101,7 @@ function App() {
     }
   },[]);
   return (
-    <>
+    <Main>
       <HlsVideoWrapper>
         <CustomPlayer options={videoOptions} onReady={onReady}/>
       </HlsVideoWrapper>
@@ -102,7 +113,7 @@ function App() {
           )
         })}
       </VideoObjects>
-    </>
+    </Main>
   )
 }
 
