@@ -34,10 +34,24 @@ const VideoObjects = styled.ul`
   display: flex;
 `
 
+const Console = styled.div`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 20px;
+`
+
+const ToggleButton = styled.button`
+  
+`
+
 
 
 function App() {
   const [ mainPlayer, setMainPlayer ] = useState<Player|null>(null);
+  const [ mode, setMode ] = useState<string>('hls');
 
   const playlist = [
     { 
@@ -85,21 +99,21 @@ function App() {
     responsive: true,
     fill: true,
     sources: [{
-      src: playlist[0].hd,
-      type: 'video/mp4'
+      src: mode === 'hls' ? playlist[0].hls : mode === '1080' ? playlist[0].hd : null,
+      type: mode === 'hls' ? 'application/x-mpegURL' : 'video/mp4'
     }]
   };
 
   const onVideoClick = useCallback((video:any) => {
     if(mainPlayer) {
       mainPlayer.src([{
-        src: video.hd,
-        type: 'video/mp4'
+        src: mode === 'hls' ? video.hls : mode === '1080' ? video.hd : null,
+        type: mode === 'hls' ? 'application/x-mpegURL' : 'video/mp4'
       }])
     }
     
     
-  }, [mainPlayer]);
+  }, [mainPlayer, mode]);
 
   const onReady = useCallback((player:Player) => {
     if(player) {
@@ -108,6 +122,10 @@ function App() {
   },[]);
   return (
     <Main>
+      <Console>
+        <ToggleButton onClick={() => setMode('hls')} className={ mode === 'hls' ?  "--active" : ""}>HLS</ToggleButton>
+        <ToggleButton onClick={() => setMode('1080')} className={ mode === '1080' ?  "--active" : ""}>1080p</ToggleButton>
+      </Console>
       <HlsVideoWrapper>
         <CustomPlayer options={videoOptions} onReady={onReady}/>
       </HlsVideoWrapper>
