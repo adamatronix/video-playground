@@ -37,7 +37,7 @@ export const VideoObject = ({
   useEffect(() => {
     if(mainplayer) {
       mainplayer.on("timeupdate", () => {
-        if(mainplayer.lastSource_.player === data.src) {
+        if(mainplayer.lastSource_.player === data.hls || mainplayer.lastSource_.player === data.hd) {
           setProgress((mainplayer.cache_.currentTime / mainplayer.cache_.duration) * 100);
         } else {
           setProgress(0);
@@ -45,20 +45,21 @@ export const VideoObject = ({
       })
     }
 
-  },[mainplayer,data.src]);
+  },[mainplayer,data]);
   useEffect(() => {
     if(!playerRef.current) {
       const videoElement = document.createElement("video-js");
       const player = playerRef.current = videojs(videoElement, {sources: [{
-        src: data.src,
-        type: 'application/x-mpegURL'
+        src: data.hd,
+        type: 'video/mp4'
+        // type: 'application/x-mpegURL'
       }]}, () => {
         player.one("loadedmetadata", () => { setObjectWidth(player.cache_.duration) });
         
       });
     }
    
-  }, [data.src])
+  }, [data])
 
 
   return (
