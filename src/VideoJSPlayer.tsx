@@ -1,16 +1,19 @@
 import { useRef, useEffect } from 'react';
 import videojs from 'video.js';
+import 'videojs-contrib-quality-levels';
 import Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css';
 
 interface VideoJSPlayerProps {
   options?:any,
-  onReady?: (player:Player) => void
+  onReady?: (player:Player) => void,
+  onQualityLevelChange?: (level:any) => void
 }
 
 export const VideoJSPlayer = ({
   options,
   onReady,
+  onQualityLevelChange,
   ...props
 }:VideoJSPlayerProps) => {
   const videoRef = useRef<any|null>(null);
@@ -33,6 +36,23 @@ export const VideoJSPlayer = ({
           videojs.log('player is ready');
           onReady && onReady(player);
         });
+
+      //@ts-ignore
+      const qualityLevels = player.qualityLevels();
+
+      qualityLevels.on('addqualitylevel', function(event:any) {
+        let qualityLevel = event.qualityLevel;
+      
+        if (qualityLevel.height >= 400) {
+          qualityLevel.enabled = true;
+        } else {
+          qualityLevel.enabled = false;
+        }
+      });
+
+      qualityLevels.on('change', function() {
+        onQualityLevelChange && onQualityLevelChange(qualityLevels[qualityLevels.selectedIndex]);
+      });
 
     // You could update an existing player in the `else` block here
     // on prop change, for example:

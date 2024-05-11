@@ -1,5 +1,5 @@
 import { VideoJSPlayer } from "./VideoJSPlayer";
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { VideoObject } from "./VideoObject";
 import Player from 'video.js/dist/types/player';
 import styled from 'styled-components';
@@ -33,12 +33,24 @@ const VideoObjects = styled.ul`
   padding: 0;
   display: flex;
 `
-
 const Console = styled.div`
   position: fixed;
-  top: 20px;
-  left: 20px;
+  width: 100%;
+  padding: 20px;
   z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+`
+
+const VideoInfo = styled.div`
+  display: flex;
+  gap: 20px;
+  background: rgba(0,0,0,0.2);
+  align-items: center;
+`
+
+const ToggleSet = styled.div`
   display: flex;
   gap: 20px;
 `
@@ -51,6 +63,7 @@ const ToggleButton = styled.button`
 
 function App() {
   const [ mainPlayer, setMainPlayer ] = useState<Player|null>(null);
+  const [ videoLevel, setVideoLevel ] = useState<any|null>(null);
   const [ mode, setMode ] = useState<string>('hls');
 
   const playlist = [
@@ -92,17 +105,27 @@ function App() {
     }
   ];
 
-  const videoOptions = {
-    autoplay: true,
-    controls: true,
-    muted: true,
-    responsive: true,
-    fill: true,
-    sources: [{
-      src: mode === 'hls' ? playlist[0].hls : mode === '1080' ? playlist[0].hd : null,
-      type: mode === 'hls' ? 'application/x-mpegURL' : 'video/mp4'
-    }]
-  };
+  const [ videoOptions, setVideoOptions ] = useState<any|null>(null);
+
+  useEffect(() => {
+    if(mode) {
+      if(mode === '1080') {
+        setVideoLevel(null);
+      }
+
+      setVideoOptions({
+        autoplay: true,
+        controls: true,
+        muted: true,
+        responsive: true,
+        fill: true,
+        sources: [{
+          src: mode === 'hls' ? playlist[0].hls : mode === '1080' ? playlist[0].hd : null,
+          type: mode === 'hls' ? 'application/x-mpegURL' : 'video/mp4'
+        }]
+      })
+    }
+  },[mode])
 
   const onVideoClick = useCallback((video:any) => {
     if(mainPlayer) {
@@ -120,14 +143,29 @@ function App() {
       setMainPlayer(player);
     }
   },[]);
+
+  const onQualityLeveLChange = useCallback((level:any) => {
+    setVideoLevel(level);
+  },[]);
+
   return (
     <Main>
       <Console>
-        <ToggleButton onClick={() => setMode('hls')} className={ mode === 'hls' ?  "--active" : ""}>HLS</ToggleButton>
-        <ToggleButton onClick={() => setMode('1080')} className={ mode === '1080' ?  "--active" : ""}>1080p</ToggleButton>
+        <ToggleSet>
+          <ToggleButton onClick={() => setMode('hls')} className={ mode === 'hls' ?  "--active" : ""}>HLS</ToggleButton>
+          <ToggleButton onClick={() => setMode('1080')} className={ mode === '1080' ?  "--active" : ""}>1080p</ToggleButton>
+        </ToggleSet>
+        { videoLevel && <VideoInfo>
+          <div>
+            bitrate:{ videoLevel?.bitrate }
+          </div>
+          <div>
+            resolution:{ videoLevel?.width }x{ videoLevel?.height}
+          </div>
+        </VideoInfo> }
       </Console>
       <HlsVideoWrapper>
-        <CustomPlayer options={videoOptions} onReady={onReady}/>
+        { videoOptions && <CustomPlayer options={videoOptions} onReady={onReady} onQualityLevelChange={onQualityLeveLChange}/> }
       </HlsVideoWrapper>
       <VideoObjects>
         { playlist && playlist.map((video:any,i:number) => {
