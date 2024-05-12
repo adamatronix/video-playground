@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import videojs from 'video.js';
 import Player from 'video.js/dist/types/player';
 

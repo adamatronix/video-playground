@@ -124,6 +124,7 @@ function App() {
         autoplay: true,
         controls: true,
         muted: true,
+        playsinline: true,
         responsive: true,
         fill: true,
         sources: [{
