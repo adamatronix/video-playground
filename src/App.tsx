@@ -27,11 +27,18 @@ const CustomPlayer = styled(VideoJSPlayer)`
   }
 `
 
+const Timeline = styled.div`
+  position: relative;
+  width: 100%;  
+  overflow: hidden;
+`
+
 const VideoObjects = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
+  width: 100%;
 `
 const Console = styled.div`
   position: fixed;
@@ -167,14 +174,16 @@ function App() {
       <HlsVideoWrapper>
         { videoOptions && <CustomPlayer options={videoOptions} onReady={onReady} onQualityLevelChange={onQualityLeveLChange}/> }
       </HlsVideoWrapper>
-      <VideoObjects>
-        { playlist && playlist.map((video:any,i:number) => {
+      <Timeline>
+        <VideoObjects>
+          { playlist && playlist.map((video:any,i:number) => {
 
-          return (
-            <VideoObject key={i} data={video} onClick={() => onVideoClick(video)} mainplayer={mainPlayer}/>
-          )
-        })}
-      </VideoObjects>
+            return (
+              <VideoObject key={i} data={video} onClick={() => onVideoClick(video)} mainplayer={mainPlayer}/>
+            )
+          })}
+        </VideoObjects>
+      </Timeline>
     </Main>
   )
 }

@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import videojs from 'video.js';
+import React, { useEffect, useState } from 'react';
+import { useDuration } from './Duration';
 import Player from 'video.js/dist/types/player';
 import styled from 'styled-components';
 import 'video.js/dist/video-js.css';
@@ -15,6 +15,9 @@ const Wrapper = styled.li`
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
+  user-select: none;
+  box-sizing: border-box;
 `
 
 const Progress = styled.div`
@@ -30,9 +33,8 @@ export const VideoObject = ({
   mainplayer,
   ...props
 }:VideoObjectProps) => {
-  const [ objectWidth , setObjectWidth ] = useState(200);
+  const [ duration ] = useDuration(data);
   const [ progress, setProgress ] = useState(0);
-  const playerRef = useRef<any|null>(null);
 
   useEffect(() => {
     if(mainplayer) {
@@ -46,24 +48,9 @@ export const VideoObject = ({
     }
 
   },[mainplayer,data]);
-  useEffect(() => {
-    if(!playerRef.current) {
-      const videoElement = document.createElement("video-js");
-      const player = playerRef.current = videojs(videoElement, {sources: [{
-        src: data.hd,
-        type: 'video/mp4'
-        // type: 'application/x-mpegURL'
-      }]}, () => {
-        player.one("loadedmetadata", () => { setObjectWidth(player.cache_.duration) });
-        
-      });
-    }
-   
-  }, [data])
-
 
   return (
-    <Wrapper style={{width: `${objectWidth}px`}}{...props}>
+    <Wrapper style={{width: duration ? `${(duration / 2000) * 100}%` : '0'}}{...props}>
       <Progress style={{width: `${progress}%`}}/>
       { data.title }
     </Wrapper>
