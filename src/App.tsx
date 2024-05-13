@@ -1,6 +1,7 @@
 import { VideoJSPlayer } from "./VideoJSPlayer";
 import { useCallback, useState, useEffect } from 'react';
-import { VideoObject } from "./VideoObject";
+import { Timeline } from "./Timeline";
+
 import Player from 'video.js/dist/types/player';
 import styled from 'styled-components';
 
@@ -27,19 +28,7 @@ const CustomPlayer = styled(VideoJSPlayer)`
   }
 `
 
-const Timeline = styled.div`
-  position: relative;
-  width: 100%;  
-  overflow: hidden;
-`
 
-const VideoObjects = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  width: 100%;
-`
 const Console = styled.div`
   position: fixed;
   width: 100%;
@@ -175,16 +164,7 @@ function App() {
       <HlsVideoWrapper>
         { videoOptions && <CustomPlayer options={videoOptions} onReady={onReady} onQualityLevelChange={onQualityLeveLChange}/> }
       </HlsVideoWrapper>
-      <Timeline>
-        <VideoObjects>
-          { playlist && playlist.map((video:any,i:number) => {
-
-            return (
-              <VideoObject key={i} data={video} onClick={() => onVideoClick(video)} mainplayer={mainPlayer}/>
-            )
-          })}
-        </VideoObjects>
-      </Timeline>
+      <Timeline playlist={playlist} mainPlayer={mainPlayer} onVideoClick={onVideoClick} />
     </Main>
   )
 }

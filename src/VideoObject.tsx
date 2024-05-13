@@ -6,6 +6,8 @@ import 'video.js/dist/video-js.css';
 
 interface VideoObjectProps extends React.HTMLAttributes<HTMLLIElement> {
   data:any,
+  progressVal:number|null,
+  onDurationComplete: (duration:number) => void,
   mainplayer?:Player|null
 }
 
@@ -18,6 +20,7 @@ const Wrapper = styled.li`
   flex-shrink: 0;
   user-select: none;
   box-sizing: border-box;
+  width: 100%;
 `
 
 const Progress = styled.div`
@@ -30,6 +33,8 @@ const Progress = styled.div`
 
 export const VideoObject = ({
   data,
+  onDurationComplete,
+  progressVal,
   mainplayer,
   ...props
 }:VideoObjectProps) => {
@@ -37,6 +42,12 @@ export const VideoObject = ({
   const [ progress, setProgress ] = useState(0);
 
   useEffect(() => {
+    if(duration && onDurationComplete) {
+      onDurationComplete(duration)
+    }
+  },[duration])
+
+  /*useEffect(() => {
     if(mainplayer) {
       mainplayer.on("timeupdate", () => {
         if(mainplayer.lastSource_.player === data.hls || mainplayer.lastSource_.player === data.hd) {
@@ -47,11 +58,11 @@ export const VideoObject = ({
       })
     }
 
-  },[mainplayer,data]);
+  },[mainplayer,data]);*/
 
   return (
-    <Wrapper style={{width: duration ? `${(duration / 2000) * 100}%` : '0'}}{...props}>
-      <Progress style={{width: `${progress}%`}}/>
+    <Wrapper {...props}>
+      <Progress style={{width: `${progressVal}%`}}/>
       { data.title }
     </Wrapper>
   )

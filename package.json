@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-spring/web": "^9.7.3",
     "@types/video.js": "^7.3.57",
+    "@use-gesture/react": "^10.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hls-player": "^3.0.7",
+    "react-spring": "^9.7.3",
     "react-use-measure": "^2.1.1",
     "styled-components": "^6.1.8",
     "video.js": "^8.10.0",
